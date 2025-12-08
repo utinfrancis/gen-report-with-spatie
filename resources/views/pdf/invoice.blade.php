@@ -2,6 +2,7 @@
 <head>
     <title>Invoice</title>
     <script src="https://cdn.tailwindcss.com"></script>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -13,12 +14,12 @@
         <div class="text-gray-700">
             <div class="font-bold text-xl mb-2 uppercase">Invoice</div>
             <div class="text-sm">Date: 01/05/2023</div>
-            <div class="text-sm">Invoice #: {{ $invoiceNumber }}</div>
+            <div class="text-sm">Invoice #: 3210</div>
         </div>
     </div>
     <div class="border-b-2 border-gray-300 pb-8 mb-8">
         <h2 class="text-2xl font-bold mb-4">Bill To:</h2>
-        <div class="text-gray-700 mb-2">{{ $customerName }}</div>
+        <div class="text-gray-700 mb-2">{ $customerName }</div>
         <div class="text-gray-700 mb-2">123 Main St.</div>
         <div class="text-gray-700 mb-2">Anytown, USA 12345</div>
         <div class="text-gray-700">johndoe@example.com</div>
@@ -66,6 +67,12 @@
         <div class="text-gray-700 mr-2">Total:</div>
         <div class="text-gray-700 font-bold text-xl">$450.50</div>
     </div>
+
+    <!-- chart area -->
+     <div class="my-3">
+        <canvas id="invoiceChart" height="120"></canvas>
+     </div>
+
     <div class="border-t-2 border-gray-300 pt-8 mb-8">
         <div class="text-gray-700 mb-2">Payment is due within 30 days. Late payments are subject to fees.</div>
         <div class="text-gray-700 mb-2">Please make checks payable to Your Company Name and mail to:</div>
@@ -73,5 +80,44 @@
     </div>
 </div>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById('invoiceChart').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @json($labels),
+                datasets: [{
+                    label: 'Amount per Item',
+                    data: @json($totals),
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: { size: 14 }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { font: { size: 12 } }
+                    },
+                    x: {
+                        ticks: { font: { size: 12 } }
+                    }
+                }
+            }
+        });
+
+        // window.chartRendered = true;
+    });
+ </script>   
 </body>
 </html>

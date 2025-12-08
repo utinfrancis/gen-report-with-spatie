@@ -9,9 +9,17 @@ Route::get('/', function () {
 
 Route::get('/generate-report', function(){
 
-$html = view('pdf.invoice')->render(); //browsershot html expects a string not a view object as received without the render() method
+$html = view('pdf.invoice', [
+      'labels' => ['Product 1', 'Product 2', 'Product 3'],
+    'totals' => [100, 100, 225],
+])->render(); //browsershot html expects a string not a view object as received without the render() method
 
-$pdf = Browsershot::html($html) -> format('A4') -> margins(10,10,10,10)->pdf();
+$pdf = Browsershot::html($html) 
+->setDelay(6000)
+// -> waitForFunction('window.chartRendered === true',null ,60000) 
+-> format('A4') 
+-> margins(10,10,10,10)
+->pdf();
 
 // to rather save to the  project's public directory, this can help
 // Browsershot::html($html) -> format('A4') -> margins(10,10,10,10)->savePdf('invoice.pdf');
